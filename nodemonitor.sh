@@ -16,10 +16,10 @@ VALIDATORCHECKS="on"    # set to 'on' for obtaining validator metrics, will be a
 ADDITIONALMETRICS="on"  # set to 'on' for additional general metrics
 GOVERNANCE="off"        # EXPERIMENTAL set to 'on' for governance metrics, might not work with all configurations, spl-token-cli must be installed
 BINDIR=""               # auto detection of the solana binary directory can fail, or an alternative custom installation can be specified
-RPCURL=""               # default is localhost with port number autodiscovered, alternatively it can be specified like 'http://custom.rpc.com:8899'
+RPCURL="testnet"               # default is localhost with port number autodiscovered, alternatively it can be specified like 'http://custom.rpc.com:8899'
 FORMAT="SOL"            # amounts shown in 'SOL' instead of 'Lamports', when choosing Lamports dependent trigger amounts need to be adjusted
 LOGNAME=""              # a custom monitor log file name can be chosen, if left empty default is 'nodecheck-<username>.log'
-LOGPATH="$(pwd)"        # the directory where the log file is stored, for customization insert path like: '/my/path'
+LOGPATH="/var/log/nodemonitor"        # the directory where the log file is stored, for customization insert path like: '/my/path'
 LOGSIZE="200"           # the max number of lines after that the log gets truncated to reduce its size
 LOGROTATION="1"         # options for log rotation: (1) rotate to $LOGNAME.1 every $LOGSIZE lines;  (2) append to $LOGNAME.1 every $LOGSIZE lines; (3) truncate $logfile to $LOGSIZE every iteration
 TIMEFORMAT="-u --rfc-3339=seconds" # date format for log line entries
@@ -54,6 +54,8 @@ if [ -z "$RPCURL" ]; then
     RPCURL="http://127.0.0.1:$rpcPort"
 fi
 
+echo $cli validators --url $RPCURL --output json-compact \| jq -r '.validators[] | select(.identityPubkey == '\"$IDENTITYPUBKEY\"') | .voteAccountPubkey'
+
 noVoting=$(ps aux | grep solana-validator | grep -c "\-\-no\-voting")
 if [ "$noVoting" -eq 0 ]; then
     if [ -z "$IDENTITYPUBKEY" ]; then IDENTITYPUBKEY=$($cli address --url $RPCURL); fi
@@ -61,8 +63,7 @@ if [ "$noVoting" -eq 0 ]; then
         echo "auto-detection failed, please configure the IDENTITYPUBKEY in the script if not done"
         exit 1
     fi
-    if [ -z "$VOTEACCOUNT" ]; then VOTEACCOUNT=$($cli validators --url $RPCURL --output json-compact | jq -r '.currentValidators[] | select(.identityPubkey == '\"$IDENTITYPUBKEY\"') | .voteAccountPubkey'); fi
-    if [ -z "$VOTEACCOUNT" ]; then VOTEACCOUNT=$($cli validators --url $RPCURL --output json-compact | jq -r '.delinquentValidators[] | select(.identityPubkey == '\"$IDENTITYPUBKEY\"') | .voteAccountPubkey'); fi
+    if [ -z "$VOTEACCOUNT" ]; then VOTEACCOUNT=$($cli validators --url $RPCURL --output json-compact | jq -r '.validators[] | select(.identityPubkey == '\"$IDENTITYPUBKEY\"') | .voteAccountPubkey'); fi
     if [ -z "$VOTEACCOUNT" ]; then
         echo "please configure the vote account in the script or wait for availability upon starting the node"
         exit 1

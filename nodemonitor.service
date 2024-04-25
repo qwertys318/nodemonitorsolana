@@ -1,0 +1,15 @@
+[Unit]
+Description=Nodemonitor Solana
+After=solana.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=sol
+
+ExecStart=/home/sol/nodemonitor.sh
+
+[Install]
+WantedBy=multi-user.target
