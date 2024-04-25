@@ -54,8 +54,6 @@ if [ -z "$RPCURL" ]; then
     RPCURL="http://127.0.0.1:$rpcPort"
 fi
 
-echo $cli validators --url $RPCURL --output json-compact \| jq -r '.validators[] | select(.identityPubkey == '\"$IDENTITYPUBKEY\"') | .voteAccountPubkey'
-
 noVoting=$(ps aux | grep solana-validator | grep -c "\-\-no\-voting")
 if [ "$noVoting" -eq 0 ]; then
     if [ -z "$IDENTITYPUBKEY" ]; then IDENTITYPUBKEY=$($cli address --url $RPCURL); fi
