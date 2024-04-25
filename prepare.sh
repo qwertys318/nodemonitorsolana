@@ -1,3 +1,7 @@
+#!/bin/bash
+
+set -e
+
 sudo mkdir /var/log/nodemonitor
 sudo chown sol:sol /var/log/nodemonitor
 chmod 755 /var/log/nodemonitor
