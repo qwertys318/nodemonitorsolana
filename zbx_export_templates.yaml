@@ -1,0 +1,801 @@
+zabbix_export:
+  version: '7.1'
+  template_groups:
+    - uuid: a571c0d144b14fd4a87a9d9b2aa9fcd6
+      name: Templates/Applications
+  templates:
+    - uuid: bf764e9aa9c7441e87288d843375f5ae
+      template: 'Template App Solana Validator'
+      name: 'Template App Solana Validator'
+      description: 'Solana Validator Node'
+      groups:
+        - name: Templates/Applications
+      items:
+        - uuid: e6e1b3304f844180ae28fca32b86aa84
+          name: activatedStake
+          type: ZABBIX_ACTIVE
+          key: 'logrt[{$NMSLOGFILE},"activatedStake=([0-9\.\-]*)",,,skip,\1,]'
+          delay: '{$NMSUPDATEINTERVAL}'
+          history: 5d
+          trends: 14d
+          value_type: FLOAT
+          tags:
+            - tag: Application
+              value: 'Solana Validator'
+          triggers:
+            - uuid: c23664affc424764ad8263155f971bf6
+              expression: 'change(/Template App Solana Validator/logrt[{$NMSLOGFILE},"activatedStake=([0-9\.\-]*)",,,skip,\1,])<>0'
+              recovery_mode: NONE
+              name: '{$NMSNODEID} : activated stake : change : new={ITEM.VALUE}'
+              priority: INFO
+              manual_close: 'YES'
+        - uuid: a7a7156753354554af573ee8b0ae1b5e
+          name: avgSlotTime
+          type: ZABBIX_ACTIVE
+          key: 'logrt[{$NMSLOGFILE},"avgSlotTime=([0-9\.\-]*)",,,skip,\1,]'
+          delay: '{$NMSUPDATEINTERVAL}'
+          history: 5d
+          trends: 14d
+          value_type: FLOAT
+          tags:
+            - tag: Application
+              value: 'Solana Validator'
+        - uuid: c4f754d3471544a7ad9ff28c60074f52
+          name: avgTPS
+          type: ZABBIX_ACTIVE
+          key: 'logrt[{$NMSLOGFILE},"avgTPS=([0-9\.\-]*)",,,skip,\1,]'
+          delay: '{$NMSUPDATEINTERVAL}'
+          history: 5d
+          trends: 14d
+          tags:
+            - tag: Application
+              value: 'Solana Validator'
+        - uuid: d32d664c219b4f16bcbf81c2412bbd33
+          name: balance
+          type: ZABBIX_ACTIVE
+          key: 'logrt[{$NMSLOGFILE},"balance=([0-9\.\-]*)",,,skip,\1,]'
+          delay: '{$NMSUPDATEINTERVAL}'
+          history: 5d
+          trends: 14d
+          value_type: FLOAT
+          tags:
+            - tag: Application
+              value: 'Solana Validator'
+          triggers:
+            - uuid: b426e37a5256497b995786b60e450954
+              expression: 'last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"balance=([0-9\.\-]*)",,,skip,\1,])>2 and last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"balance=([0-9\.\-]*)",,,skip,\1,])<=10'
+              name: '{$NMSNODEID} : 2 < balance <= 10 : last={ITEM.VALUE}'
+              priority: INFO
+              manual_close: 'YES'
+            - uuid: b8c8fcd803fc4048abaab56e171db688
+              expression: 'last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"balance=([0-9\.\-]*)",,,skip,\1,])<=2'
+              name: '{$NMSNODEID} : balance <= 2 : last={ITEM.VALUE}'
+              priority: AVERAGE
+              manual_close: 'YES'
+        - name: balance_vote
+          type: ZABBIX_ACTIVE
+          key: 'logrt[{$NMSLOGFILE},"balance_vote=([0-9\.\-]*)",,,skip,\1,]'
+          delay: '{$NMSUPDATEINTERVAL}'
+          history: 5d
+          trends: 14d
+          value_type: FLOAT
+          tags:
+            - tag: Application
+              value: 'Solana Validator'
+        - uuid: 420e430c53a347db84338dba59e01cc9
+          name: behind
+          type: ZABBIX_ACTIVE
+          key: 'logrt[{$NMSLOGFILE},"behind=([0-9\.\-]*)",,,skip,\1,]'
+          delay: '{$NMSUPDATEINTERVAL}'
+          history: 5d
+          trends: 14d
+          tags:
+            - tag: Application
+              value: 'Solana Validator'
+          triggers:
+            - uuid: 8c0cc2fc39fc40f89b79e26a208315da
+              expression: 'avg(/Template App Solana Validator/logrt[{$NMSLOGFILE},"behind=([0-9\.\-]*)",,,skip,\1,],#10)>=1.2*avg(/Template App Solana Validator/logrt[{$NMSLOGFILE},"behind=([0-9\.\-]*)",,,skip,\1,],1h:now-10m)'
+              name: '{$NMSNODEID} : behind last 10 avg >20% above 1h avg  : last={ITEM.VALUE}'
+              priority: INFO
+              manual_close: 'YES'
+        - uuid: c3218e322ff144e7a53fb9f5ffc6424a
+          name: 'nodemonitor elapsed'
+          type: ZABBIX_ACTIVE
+          key: 'logrt[{$NMSLOGFILE},"elapsed=([0-9\.\-]*)",,,skip,\1,]'
+          delay: '{$NMSUPDATEINTERVAL}'
+          history: 5d
+          trends: 14d
+          tags:
+            - tag: Application
+              value: 'Solana Validator'
+          triggers:
+            - uuid: 7d21ea83d47a4ba8b9912d9937f6ec4b
+              expression: 'last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"elapsed=([0-9\.\-]*)",,,skip,\1,])>{$NMSTLASTBLOCKELAPSED}'
+              name: '{$NMSNODEID} : elapsed > {$NMSTLASTBLOCKELAPSED} : T={ITEM.VALUE}'
+              priority: WARNING
+              manual_close: 'YES'
+        - uuid: 8a827bb29b4f4c4980de6d5684ca5cf0
+          name: height
+          type: ZABBIX_ACTIVE
+          key: 'logrt[{$NMSLOGFILE},"height=([0-9\.\-]*)",,,skip,\1,]'
+          delay: '{$NMSUPDATEINTERVAL}'
+          history: 5d
+          trends: 14d
+          tags:
+            - tag: Application
+              value: 'Solana Validator'
+        - uuid: fd6d60b92f8e4ffa98996fbfdb1303c5
+          name: leaderSlots
+          type: ZABBIX_ACTIVE
+          key: 'logrt[{$NMSLOGFILE},"leaderSlots=([0-9\.\-]*)",,,skip,\1,]'
+          delay: '{$NMSUPDATEINTERVAL}'
+          history: 5d
+          trends: 14d
+          tags:
+            - tag: Application
+              value: 'Solana Validator'
+        - uuid: d7f14b221b634dadb7fc88afc3e1a0ec
+          name: nodes
+          type: ZABBIX_ACTIVE
+          key: 'logrt[{$NMSLOGFILE},"nodes=([0-9\.\-]*)",,,skip,\1,]'
+          delay: '{$NMSUPDATEINTERVAL}'
+          history: 5d
+          trends: 14d
+          tags:
+            - tag: Application
+              value: 'Solana Validator'
+        - uuid: 466d582ef1c84450a82b80ad40998c38
+          name: 'nodemonitor pctNewerVersions'
+          type: ZABBIX_ACTIVE
+          key: 'logrt[{$NMSLOGFILE},"pctNewerVersions=([0-9\.\-]*)",,,skip,\1,]'
+          delay: '{$NMSUPDATEINTERVAL}'
+          history: 5d
+          trends: 14d
+          value_type: FLOAT
+          tags:
+            - tag: Application
+              value: 'Solana Validator'
+          triggers:
+            - uuid: 4913f9482a404c379b875710a934233b
+              expression: 'last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"pctNewerVersions=([0-9\.\-]*)",,,skip,\1,])>10'
+              name: '{$NMSNODEID} : %NewerVersions > 10 : pct={ITEM.VALUE}'
+              priority: AVERAGE
+              manual_close: 'YES'
+            - uuid: 2ac41a724ba3463bb2032eb2a30cafc3
+              expression: 'last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"pctNewerVersions=([0-9\.\-]*)",,,skip,\1,])>3 and last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"pctNewerVersions=([0-9\.\-]*)",,,skip,\1,])<=10'
+              name: '{$NMSNODEID} : 3 < %NewerVersions <= 10 : pct={ITEM.VALUE}'
+              priority: INFO
+              manual_close: 'YES'
+        - uuid: 5c35d5f75d474500b57123c9f785de51
+          name: 'nodemonitor pctSkipped'
+          type: ZABBIX_ACTIVE
+          key: 'logrt[{$NMSLOGFILE},"pctSkipped=([0-9\.\-]*)",,,skip,\1,]'
+          delay: '{$NMSUPDATEINTERVAL}'
+          history: 5d
+          trends: 14d
+          value_type: FLOAT
+          tags:
+            - tag: Application
+              value: 'Solana Validator'
+        - uuid: 4d27e9cd8f5e4d6493ac27982b44e86b
+          name: 'nodemonitor pctSkippedDelta'
+          type: ZABBIX_ACTIVE
+          key: 'logrt[{$NMSLOGFILE},"pctSkippedDelta=([0-9\.\-]*)",,,skip,\1,]'
+          delay: '{$NMSUPDATEINTERVAL}'
+          history: 5d
+          trends: 14d
+          value_type: FLOAT
+          tags:
+            - tag: Application
+              value: 'Solana Validator'
+        - uuid: 92c60e4034e644318e6aab3f2afdcec6
+          name: 'nodemonitor pctTotDelinquent'
+          type: ZABBIX_ACTIVE
+          key: 'logrt[{$NMSLOGFILE},"pctTotDelinquent=([0-9\.\-]*)",,,skip,\1,]'
+          delay: '{$NMSUPDATEINTERVAL}'
+          history: 5d
+          trends: 14d
+          value_type: FLOAT
+          tags:
+            - tag: Application
+              value: 'Solana Validator'
+          triggers:
+            - uuid: 41dc3a24845e431fa650125fd23ca7ff
+              expression: 'last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"pctTotDelinquent=([0-9\.\-]*)",,,skip,\1,])>15'
+              name: '{$NMSNODEID} : %TotDelinquent > 15 : pct={ITEM.VALUE}'
+              priority: WARNING
+              manual_close: 'YES'
+            - uuid: 82498574d692490483fa34f5201f5381
+              expression: 'last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"pctTotDelinquent=([0-9\.\-]*)",,,skip,\1,])>5 and last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"pctTotDelinquent=([0-9\.\-]*)",,,skip,\1,])<=15'
+              name: '{$NMSNODEID} : 5 < %TotDelinquent <= 15 : pct={ITEM.VALUE}'
+              priority: INFO
+              manual_close: 'YES'
+        - uuid: 124be3c7f2094b81967c6ecd32267d4b
+          name: 'nodemonitor pctTotSkipped'
+          type: ZABBIX_ACTIVE
+          key: 'logrt[{$NMSLOGFILE},"pctTotSkipped=([0-9\.\-]*)",,,skip,\1,]'
+          delay: '{$NMSUPDATEINTERVAL}'
+          history: 5d
+          trends: 14d
+          value_type: FLOAT
+          tags:
+            - tag: Application
+              value: 'Solana Validator'
+        - uuid: 0e01ffe37c784eefb47d0ea32180cba9
+          name: 'nodemonitor status'
+          type: ZABBIX_ACTIVE
+          key: 'logrt[{$NMSLOGFILE},"status=(\w*)",,,skip,\1,]'
+          delay: '{$NMSUPDATEINTERVAL}'
+          history: 5d
+          trends: '0'
+          value_type: CHAR
+          description: |
+            scriptstarted | error | up | active | delinquent
+            
+            error can have various causes, typically the solana-validator process is down.
+          tags:
+            - tag: Application
+              value: 'Solana Validator'
+          triggers:
+            - uuid: 8f745aa268364ca2997da790ff37d139
+              expression: 'nodata(/Template App Solana Validator/logrt[{$NMSLOGFILE},"status=(\w*)",,,skip,\1,],{$NMSNODATA})=1'
+              name: '{$NMSNODEID} : no log data : T > {$NMSNODATA}'
+              priority: HIGH
+              manual_close: 'YES'
+            - uuid: cfcbb6bda8f248539cb225db4d1a7b69
+              expression: 'find(/Template App Solana Validator/logrt[{$NMSLOGFILE},"status=(\w*)",,,skip,\1,],#1,"iregexp","delinquent")=1'
+              name: '{$NMSNODEID} : status : delinquent'
+              priority: AVERAGE
+              manual_close: 'YES'
+            - uuid: f2719a4219d04463811370192be92bd1
+              expression: 'find(/Template App Solana Validator/logrt[{$NMSLOGFILE},"status=(\w*)",,,skip,\1,],#1,"iregexp","error")=1'
+              name: '{$NMSNODEID} : status : error'
+              priority: HIGH
+              manual_close: 'YES'
+            - uuid: 16a40371f9404bc0a8f733e0cc8ab54a
+              expression: 'find(/Template App Solana Validator/logrt[{$NMSLOGFILE},"status=(\w*)",,,skip,\1,],#1,"iregexp","scriptstarted")=1'
+              name: '{$NMSNODEID} : status : script started'
+              priority: INFO
+              manual_close: 'YES'
+      macros:
+        - macro: '{$NMSLOGFILE}'
+          description: 'Location of the nodemonitor log file on the host, example: /home/user/nodemonitor-user.log'
+        - macro: '{$NMSNODATA}'
+          value: '120'
+          description: 'Time is seconds for no data received trigger'
+        - macro: '{$NMSNODEID}'
+          value: Solana
+          description: 'Identifier for the node on the server (useful if more than one are hosted).'
+        - macro: '{$NMSTHRSHLDLEADERSLOTS}'
+          value: '50'
+          description: 'Default threshold value for min #leaderSlots activating pctSkipped trigger'
+        - macro: '{$NMSTLASTBLOCKELAPSED}'
+          value: '300'
+          description: 'Time in seconds from the blockheight in the logfile that triggers a warning (chain halt detection).'
+        - macro: '{$NMSUPDATEINTERVAL}'
+          value: 1s
+          description: 'update interval for items'
+      dashboards:
+        - uuid: 431b9f330023461aa52d86bb7a9527c2
+          name: 'Solana Metrics'
+          pages:
+            - widgets:
+                - type: graph
+                  width: '12'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: '% Skipped'
+                    - type: STRING
+                      name: reference
+                      value: AAAAA
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  'y': '5'
+                  width: '12'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: '% Total Delinquent'
+                    - type: STRING
+                      name: reference
+                      value: AAAAC
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  'y': '10'
+                  width: '12'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: 'Average Slot Time'
+                    - type: STRING
+                      name: reference
+                      value: AAAAE
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  'y': '15'
+                  width: '12'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: 'Activated Stake'
+                    - type: STRING
+                      name: reference
+                      value: AAAAG
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  'y': '20'
+                  width: '12'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: Balance
+                    - type: STRING
+                      name: reference
+                      value: AAAAI
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  'y': '25'
+                  width: '12'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: 'Leader Slots'
+                    - type: STRING
+                      name: reference
+                      value: AAAAK
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  x: '12'
+                  width: '12'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: '% Skipped Delta'
+                    - type: STRING
+                      name: reference
+                      value: AAAAB
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  x: '12'
+                  'y': '5'
+                  width: '12'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: '% Newer Versions'
+                    - type: STRING
+                      name: reference
+                      value: AAAAD
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  x: '12'
+                  'y': '10'
+                  width: '12'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: 'Time Elapsed'
+                    - type: STRING
+                      name: reference
+                      value: AAAAF
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  x: '12'
+                  'y': '15'
+                  width: '12'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: Nodes
+                    - type: STRING
+                      name: reference
+                      value: AAAAH
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  x: '12'
+                  'y': '20'
+                  width: '12'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: Behind
+                    - type: STRING
+                      name: reference
+                      value: AAAAJ
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  x: '12'
+                  'y': '25'
+                  width: '12'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: avgTPS
+                    - type: STRING
+                      name: reference
+                      value: AAAAL
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+        - uuid: b5a747d28a474a8fb53ed421399bf832
+          name: 'Solana Metrics Mobile'
+          pages:
+            - widgets:
+                - type: graph
+                  width: '24'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: '% Skipped'
+                    - type: STRING
+                      name: reference
+                      value: AAAAA
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  'y': '5'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: '% Skipped Delta'
+                    - type: STRING
+                      name: reference
+                      value: AAAAB
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  'y': '10'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: 'Leader Slots'
+                    - type: STRING
+                      name: reference
+                      value: AAAAC
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  'y': '15'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: '% Total Delinquent'
+                    - type: STRING
+                      name: reference
+                      value: AAAAD
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  'y': '20'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: '% Newer Versions'
+                    - type: STRING
+                      name: reference
+                      value: AAAAE
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  'y': '25'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: 'Activated Stake'
+                    - type: STRING
+                      name: reference
+                      value: AAAAF
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  'y': '30'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: Nodes
+                    - type: STRING
+                      name: reference
+                      value: AAAAG
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  'y': '35'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: 'Average Slot Time'
+                    - type: STRING
+                      name: reference
+                      value: AAAAH
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  'y': '40'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: Behind
+                    - type: STRING
+                      name: reference
+                      value: AAAAI
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  'y': '45'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: 'Time Elapsed'
+                    - type: STRING
+                      name: reference
+                      value: AAAAJ
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  'y': '50'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: avgTPS
+                    - type: STRING
+                      name: reference
+                      value: AAAAK
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+                - type: graph
+                  'y': '55'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Template App Solana Validator'
+                        name: Balance
+                    - type: STRING
+                      name: reference
+                      value: AAAAL
+                    - type: INTEGER
+                      name: source_type
+                      value: '0'
+  triggers:
+    - uuid: 16da24bd18c74932bd9ffb1dc54fb19f
+      expression: 'last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"pctSkipped=([0-9\.\-]*)",,,skip,\1,])>=20 and last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"leaderSlots=([0-9\.\-]*)",,,skip,\1,])>{$NMSTHRSHLDLEADERSLOTS} and last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"leaderSlots=([0-9\.\-]*)",,,skip,\1,])>{$NMSTHRSHLDLEADERSLOTS}'
+      name: '{$NMSNODEID} : %skipped >= 20  for leaderSlots > {$NMSTHRSHLDLEADERSLOTS} : pct={ITEM.VALUE}'
+      priority: WARNING
+      manual_close: 'YES'
+    - uuid: 37c09865f7cd445ab208604cc647b111
+      expression: 'last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"pctSkippedDelta=([0-9\.\-]*)",,,skip,\1,])>=50 and last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"leaderSlots=([0-9\.\-]*)",,,skip,\1,])>{$NMSTHRSHLDLEADERSLOTS}'
+      name: '{$NMSNODEID} : %skippedDelta >= 50 for leaderSlots > {$NMSTHRSHLDLEADERSLOTS} : pct={ITEM.VALUE}'
+      priority: WARNING
+      manual_close: 'YES'
+    - uuid: b4a31588fa4e43568760c70a856244fb
+      expression: 'last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"pctSkippedDelta=([0-9\.\-]*)",,,skip,\1,])>5 and last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"pctSkippedDelta=([0-9\.\-]*)",,,skip,\1,])<=10 and last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"leaderSlots=([0-9\.\-]*)",,,skip,\1,])>{$NMSTHRSHLDLEADERSLOTS}'
+      name: '{$NMSNODEID} : 5 < %skippedDelta <= 10 for leaderSlots > {$NMSTHRSHLDLEADERSLOTS} : pct={ITEM.VALUE}'
+      priority: INFO
+      manual_close: 'YES'
+    - uuid: 316b89ba1a33406a91c03e13bfac02b9
+      expression: 'last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"pctSkippedDelta=([0-9\.\-]*)",,,skip,\1,])>10 and last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"pctSkippedDelta=([0-9\.\-]*)",,,skip,\1,])<=50 and last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"leaderSlots=([0-9\.\-]*)",,,skip,\1,])>{$NMSTHRSHLDLEADERSLOTS}'
+      name: '{$NMSNODEID} : 10 < %skippedDelta <= 50 for leaderSlots > {$NMSTHRSHLDLEADERSLOTS} : pct={ITEM.VALUE}'
+      priority: INFO
+      manual_close: 'YES'
+    - uuid: 9ee49d17831c49ad9a1973ab65b11768
+      expression: 'last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"pctSkipped=([0-9\.\-]*)",,,skip,\1,])>=10 and last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"pctSkipped=([0-9\.\-]*)",,,skip,\1,])<20 and last(/Template App Solana Validator/logrt[{$NMSLOGFILE},"leaderSlots=([0-9\.\-]*)",,,skip,\1,])>{$NMSTHRSHLDLEADERSLOTS}'
+      name: '{$NMSNODEID} : 10 <= %skipped < 20  for leaderSlots > {$NMSTHRSHLDLEADERSLOTS} : pct={ITEM.VALUE}'
+      priority: INFO
+      manual_close: 'YES'
+  graphs:
+    - uuid: df160a61fcfb49b7bfaeb54e9bb88762
+      name: '% Newer Versions'
+      graph_items:
+        - sortorder: '1'
+          color: 199C0D
+          item:
+            host: 'Template App Solana Validator'
+            key: 'logrt[{$NMSLOGFILE},"pctNewerVersions=([0-9\.\-]*)",,,skip,\1,]'
+    - uuid: 1fd85caef3d2472e914b51c9544a9bb4
+      name: '% Skipped'
+      graph_items:
+        - sortorder: '1'
+          color: 199C0D
+          item:
+            host: 'Template App Solana Validator'
+            key: 'logrt[{$NMSLOGFILE},"pctSkipped=([0-9\.\-]*)",,,skip,\1,]'
+        - sortorder: '2'
+          color: F63100
+          item:
+            host: 'Template App Solana Validator'
+            key: 'logrt[{$NMSLOGFILE},"pctTotSkipped=([0-9\.\-]*)",,,skip,\1,]'
+    - uuid: 1e0337284ec545b1be5515e0fb567d19
+      name: '% Skipped Delta'
+      graph_items:
+        - sortorder: '1'
+          color: 199C0D
+          item:
+            host: 'Template App Solana Validator'
+            key: 'logrt[{$NMSLOGFILE},"pctSkippedDelta=([0-9\.\-]*)",,,skip,\1,]'
+    - uuid: 58996b0db7d24d9196ad4f0b0cd86dd7
+      name: '% Total Delinquent'
+      graph_items:
+        - sortorder: '1'
+          color: 199C0D
+          item:
+            host: 'Template App Solana Validator'
+            key: 'logrt[{$NMSLOGFILE},"pctTotDelinquent=([0-9\.\-]*)",,,skip,\1,]'
+    - uuid: e5c5aa82e6264a76890b7dc7289b1e84
+      name: 'Activated Stake'
+      graph_items:
+        - sortorder: '1'
+          color: 199C0D
+          item:
+            host: 'Template App Solana Validator'
+            key: 'logrt[{$NMSLOGFILE},"activatedStake=([0-9\.\-]*)",,,skip,\1,]'
+    - uuid: 410077468d954e63a57368a1d77010ac
+      name: 'Average Slot Time'
+      graph_items:
+        - sortorder: '1'
+          color: 199C0D
+          item:
+            host: 'Template App Solana Validator'
+            key: 'logrt[{$NMSLOGFILE},"avgSlotTime=([0-9\.\-]*)",,,skip,\1,]'
+    - uuid: b4b202a5928d4c37bc2a2ab9af6e0778
+      name: avgTPS
+      graph_items:
+        - sortorder: '1'
+          color: 199C0D
+          item:
+            host: 'Template App Solana Validator'
+            key: 'logrt[{$NMSLOGFILE},"avgTPS=([0-9\.\-]*)",,,skip,\1,]'
+    - uuid: c92ff86461c9440da7407cfb2e76e9b9
+      name: Balance
+      graph_items:
+        - sortorder: '1'
+          color: 199C0D
+          item:
+            host: 'Template App Solana Validator'
+            key: 'logrt[{$NMSLOGFILE},"balance=([0-9\.\-]*)",,,skip,\1,]'
+    - uuid: 4fd7a2dc75024298b5e88acb7169fa22
+      name: Behind
+      graph_items:
+        - sortorder: '1'
+          color: 199C0D
+          item:
+            host: 'Template App Solana Validator'
+            key: 'logrt[{$NMSLOGFILE},"behind=([0-9\.\-]*)",,,skip,\1,]'
+    - uuid: 87509e7a47f84d1a975fff1b66b19bfc
+      name: 'Leader Slots'
+      graph_items:
+        - sortorder: '1'
+          color: 199C0D
+          item:
+            host: 'Template App Solana Validator'
+            key: 'logrt[{$NMSLOGFILE},"leaderSlots=([0-9\.\-]*)",,,skip,\1,]'
+    - uuid: 8c8d55d3c833456bb69c55d75ce12aee
+      name: Nodes
+      graph_items:
+        - sortorder: '1'
+          color: 199C0D
+          item:
+            host: 'Template App Solana Validator'
+            key: 'logrt[{$NMSLOGFILE},"nodes=([0-9\.\-]*)",,,skip,\1,]'
+    - uuid: d59ca87ba09b4136844d187d5b806510
+      name: 'Time Elapsed'
+      graph_items:
+        - sortorder: '1'
+          color: 199C0D
+          item:
+            host: 'Template App Solana Validator'
+            key: 'logrt[{$NMSLOGFILE},"elapsed=([0-9\.\-]*)",,,skip,\1,]'
