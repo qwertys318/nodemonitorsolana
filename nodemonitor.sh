@@ -147,6 +147,7 @@ while true; do
                 totalSlotsSkipped=$(jq -r '.total_slots_skipped' <<<$blockProduction)
                 if [ "$FORMAT" == "SOL" ]; then
                     activatedStakeDisplay=$(echo "scale=2 ; $activatedStake / 1000000000.0" | bc)
+                    balance=$(echo "scale=2 ; $balance / 1000000000.0" | bc)
                     balance_vote=$(echo "scale=2 ; $balance_vote / 1000000000.0" | bc)
                 fi
                 if [ -n "$leaderSlots" ]; then pctSkipped=$(echo "scale=2 ; 100 * $skippedSlots / $leaderSlots" | bc); fi

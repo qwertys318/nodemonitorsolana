@@ -1,5 +1,5 @@
 zabbix_export:
-  version: '7.1'
+  version: '7.0'
   template_groups:
     - uuid: a571c0d144b14fd4a87a9d9b2aa9fcd6
       name: Templates/Applications
@@ -55,8 +55,7 @@ zabbix_export:
           type: ZABBIX_ACTIVE
           key: 'logrt[{$NMSLOGFILE},"balance=([0-9\.\-]*)",,,skip,\1,]'
           delay: '{$NMSUPDATEINTERVAL}'
-          history: 5d
-          trends: 14d
+          trends: '14d'
           value_type: FLOAT
           tags:
             - tag: Application
@@ -72,12 +71,12 @@ zabbix_export:
               name: '{$NMSNODEID} : balance <= 2 : last={ITEM.VALUE}'
               priority: AVERAGE
               manual_close: 'YES'
-        - name: balance_vote
+        - uuid: c58e2c0513f54f888db35f5c4968bcb6
+          name: balance_vote
           type: ZABBIX_ACTIVE
           key: 'logrt[{$NMSLOGFILE},"balance_vote=([0-9\.\-]*)",,,skip,\1,]'
           delay: '{$NMSUPDATEINTERVAL}'
-          history: 5d
-          trends: 14d
+          trends: '14d'
           value_type: FLOAT
           tags:
             - tag: Application
