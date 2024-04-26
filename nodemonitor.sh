@@ -130,6 +130,8 @@ while true; do
                 if [[ -n "$slotHeight" && -n "$blockHeight" ]]; then behind=$(($slotHeight - $blockHeight)); else behind=""; fi
                 balance=$($cli account $IDENTITYPUBKEY --url $RPCURL --output json-compact)
                 balance=$(jq -r '.account.lamports' <<<$balance)
+                balance_vote=$($cli account $VOTEACCOUNT --url $RPCURL --output json-compact)
+                balance_vote=$(jq -r '.account.lamports' <<<$balance_vote)
                 activatedStake=$(jq -r '.activatedStake' <<<$currentValidatorInfo)
                 activatedStakeDisplay=$activatedStake
                 credits=$(jq -r '.credits' <<<$currentValidatorInfo)
@@ -145,7 +147,7 @@ while true; do
                 totalSlotsSkipped=$(jq -r '.total_slots_skipped' <<<$blockProduction)
                 if [ "$FORMAT" == "SOL" ]; then
                     activatedStakeDisplay=$(echo "scale=2 ; $activatedStake / 1000000000.0" | bc)
-                    balance=$(echo "scale=2 ; $balance / 1000000000.0" | bc)
+                    balance_vote=$(echo "scale=2 ; $balance_vote / 1000000000.0" | bc)
                 fi
                 if [ -n "$leaderSlots" ]; then pctSkipped=$(echo "scale=2 ; 100 * $skippedSlots / $leaderSlots" | bc); fi
                 if [ -n "$totalBlocksProduced" ]; then
@@ -167,7 +169,7 @@ while true; do
                 #pctVersionActive=$(echo "scale=2 ; 100 * $versionActiveStake / $totalCurrentStake" | bc)
                 pctNewerVersions=$(echo "scale=2 ; 100 * $stakeNewerVersions / $totalCurrentStake" | bc)
                 logentry="$logentry leaderSlots=$leaderSlots skippedSlots=$skippedSlots pctSkipped=$pctSkipped pctTotSkipped=$pctTotSkipped pctSkippedDelta=$pctSkippedDelta pctTotDelinquent=$pctTotDelinquent"
-                logentry="$logentry version=$version pctNewerVersions=$pctNewerVersions balance=$balance activatedStake=$activatedStakeDisplay credits=$credits commission=$commission"
+                logentry="$logentry version=$version pctNewerVersions=$pctNewerVersions balance=$balance balance_vote=$balance_vote activatedStake=$activatedStakeDisplay credits=$credits commission=$commission"
                 if [ "$GOVERNANCE" == "on" ]; then
                     outstandingVotes=$(spl-token accounts --url $RPCURL | grep -c "[0-9]\.[0-9]")
                     logentry="$logentry outstandingVotes=$outstandingVotes"
