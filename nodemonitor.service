@@ -10,9 +10,9 @@ RestartSec=1
 User=sol
 
 #Environment="RPCURL=mainnet-beta"
-#Environment="testnet"
+#Environment="RPCURL=testnet"
 
-ExecStart=/home/sol/nodemonitor.sh
+ExecStart=/home/sol/nodemonitorsolana/nodemonitor.sh
 
 [Install]
 WantedBy=multi-user.target
