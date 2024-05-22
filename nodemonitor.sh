@@ -16,7 +16,7 @@ VALIDATORCHECKS="on"    # set to 'on' for obtaining validator metrics, will be a
 ADDITIONALMETRICS="on"  # set to 'on' for additional general metrics
 GOVERNANCE="off"        # EXPERIMENTAL set to 'on' for governance metrics, might not work with all configurations, spl-token-cli must be installed
 BINDIR=""               # auto detection of the solana binary directory can fail, or an alternative custom installation can be specified
-RPCURL="testnet"               # default is localhost with port number autodiscovered, alternatively it can be specified like 'http://custom.rpc.com:8899'
+#RPCURL="testnet"       # MOVED TO .service        # default is localhost with port number autodiscovered, alternatively it can be specified like 'http://custom.rpc.com:8899'
 FORMAT="SOL"            # amounts shown in 'SOL' instead of 'Lamports', when choosing Lamports dependent trigger amounts need to be adjusted
 LOGNAME=""              # a custom monitor log file name can be chosen, if left empty default is 'nodecheck-<username>.log'
 LOGPATH="/var/log/nodemonitor"        # the directory where the log file is stored, for customization insert path like: '/my/path'
@@ -207,7 +207,7 @@ while true; do
         status="error"
         variables="status=$status"
         logentry="[$now] $variables"
-        echo "$logentry" >>$logfile
+        #echo "$logentry" >>$logfile
     fi
 
     nloglines=$(wc -l <$logfile)

@@ -55,7 +55,7 @@ zabbix_export:
           type: ZABBIX_ACTIVE
           key: 'logrt[{$NMSLOGFILE},"balance=([0-9\.\-]*)",,,skip,\1,]'
           delay: '{$NMSUPDATEINTERVAL}'
-          trends: '14d'
+          history: 365d
           value_type: FLOAT
           tags:
             - tag: Application
@@ -76,7 +76,7 @@ zabbix_export:
           type: ZABBIX_ACTIVE
           key: 'logrt[{$NMSLOGFILE},"balance_vote=([0-9\.\-]*)",,,skip,\1,]'
           delay: '{$NMSUPDATEINTERVAL}'
-          trends: '14d'
+          history: 365d
           value_type: FLOAT
           tags:
             - tag: Application
