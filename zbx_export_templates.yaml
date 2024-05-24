@@ -260,7 +260,7 @@ zabbix_export:
         - macro: '{$NMSLOGFILE}'
           description: 'Location of the nodemonitor log file on the host, example: /home/user/nodemonitor-user.log'
         - macro: '{$NMSNODATA}'
-          value: '120'
+          value: '180'
           description: 'Time is seconds for no data received trigger'
         - macro: '{$NMSNODEID}'
           value: Solana
